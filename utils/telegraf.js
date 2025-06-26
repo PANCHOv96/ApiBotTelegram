@@ -2,12 +2,13 @@ import { Telegraf , Markup} from "telegraf";
 import axios from 'axios';
 import 'dotenv/config.js';
 
-const { BOT_TOKEN }  = process.env
+const { BOT_TOKEN, URL_STATUS }  = process.env
 
 const setURL = (url) => {
     return url 
 }
-const getURL = setURL('http://localhost:1235')
+
+const getURL = setURL(URL_STATUS)
 
 function getMainMenu(ctx) {
     return ctx.reply(
@@ -28,10 +29,13 @@ bot.command(['menu','menú','start'], (ctx) => {
 
 bot.hears('🌎 STATUS', async (ctx) => {
     try {
-        const response = await axios.get(getURL);
+        const response = await axios.get(getURL,{
+            timeout: 5000 // 5 segundos
+        });
         const data = response.data;
         const status = data.status;
-        ctx.reply(status);
+        const dev = URL_STATUS.includes('localhost')
+        ctx.reply(`${status} ${dev?'-DEV':''}`);
     } catch (error) {
         const mensajeError = error.response?.data?.error;
         ctx.reply(mensajeError ? mensajeError : `Ocurrio un error`);
