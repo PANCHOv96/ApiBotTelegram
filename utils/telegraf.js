@@ -58,7 +58,7 @@ bot.hears('🔒 BloquearBotsTW', async (ctx) => {
         const response = await axios.get(`${getURL}/api/bloquear`);
         const data = response.data;
         const result = data.result;
-        ctx.reply(result);
+        ctx.reply(result,getMainMenu(ctx));
     } catch (error) {
         const mensajeError = error.response?.data?.error;
         ctx.reply(mensajeError ? mensajeError : `Ocurrio un error`);
@@ -70,7 +70,7 @@ bot.hears('🔓 DesbloquearBotsTW', async (ctx) => {
         const response = await axios.get(`${getURL}/api/desbloquear`);
         const data = response.data;
         const result = data.result;
-        ctx.reply(result);
+        ctx.reply(result,getMainMenu(ctx));
     } catch (error) {
         const mensajeError = error.response?.data?.error;
         ctx.reply(mensajeError ? mensajeError : `Ocurrio un error`);
