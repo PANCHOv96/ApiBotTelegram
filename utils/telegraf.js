@@ -4,12 +4,6 @@ import 'dotenv/config.js';
 
 const { BOT_TOKEN, URL_STATUS }  = process.env
 
-const setURL = (url) => {
-    return url 
-}
-
-const getURL = setURL(URL_STATUS)
-
 function getMainMenu(ctx) {
     return ctx.reply(
         '📚 Menú Principal:',
@@ -24,12 +18,18 @@ function getMainMenu(ctx) {
 export const bot = new Telegraf(BOT_TOKEN)
 // Comando /menu (para mostrar el teclado nuevamente)
 bot.command(['menu','menú','start'], (ctx) => {
-    getMainMenu(ctx);
+    try{
+        getMainMenu(ctx);
+    }
+    catch(error){
+        const mensajeError = error.response?.data?.error;
+        ctx.reply(mensajeError ? mensajeError : `Ocurrio un error`);
+    }
 });
 
 bot.hears('🌎 STATUS', async (ctx) => {
     try {
-        const response = await axios.get(getURL,{
+        const response = await axios.get(URL_STATUS,{
             timeout: 5000 // 5 segundos
         });
         const data = response.data;
@@ -43,19 +43,25 @@ bot.hears('🌎 STATUS', async (ctx) => {
 });
 
 bot.hears('⚙️ Configuración', (ctx) => {
-    ctx.reply(
-        '🔥Bloqueo manual de emergencia🚒',
-        Markup.keyboard([
-            ['🔒 BloquearBotsTW'],
-            ['🔓 DesbloquearBotsTW'],
-            ['🔙 REGRESAR']
-        ])
-    );
+    try{
+        ctx.reply(
+            '🔥Bloqueo manual de emergencia🚒',
+            Markup.keyboard([
+                ['🔒 BloquearBotsTW'],
+                ['🔓 DesbloquearBotsTW'],
+                ['🔙 REGRESAR']
+            ])
+        );
+    }
+    catch(error){
+        const mensajeError = error.response?.data?.error;
+        ctx.reply(mensajeError ? mensajeError : `Ocurrio un error`);
+    }
 });
 
 bot.hears('🔒 BloquearBotsTW', async (ctx) => {
     try {
-        const response = await axios.get(`${getURL}/api/bloquear`);
+        const response = await axios.get(`${URL_STATUS}/api/bloquear`);
         const data = response.data;
         const result = data.result;
         ctx.reply(result,getMainMenu(ctx));
@@ -67,7 +73,7 @@ bot.hears('🔒 BloquearBotsTW', async (ctx) => {
 
 bot.hears('🔓 DesbloquearBotsTW', async (ctx) => {
     try {
-        const response = await axios.get(`${getURL}/api/desbloquear`);
+        const response = await axios.get(`${URL_STATUS}/api/desbloquear`);
         const data = response.data;
         const result = data.result;
         ctx.reply(result,getMainMenu(ctx));
@@ -78,7 +84,13 @@ bot.hears('🔓 DesbloquearBotsTW', async (ctx) => {
 });
 
 bot.hears('🔙 REGRESAR', (ctx) => {
-    getMainMenu(ctx);
+    try{
+        getMainMenu(ctx);
+    }
+    catch(error){
+        const mensajeError = error.response?.data?.error;
+        ctx.reply(mensajeError ? mensajeError : `Ocurrio un error`);
+    }
 });
 
 bot.launch()
