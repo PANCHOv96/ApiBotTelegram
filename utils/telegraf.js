@@ -61,7 +61,9 @@ bot.hears('⚙️ Configuración', (ctx) => {
 
 bot.hears('🔒 BloquearBotsTW', async (ctx) => {
     try {
-        const response = await axios.get(`${URL_STATUS}/api/bloquear`);
+        const response = await axios.get(`${URL_STATUS}/api/bloquear`,{
+            timeout: 5000 // 5 segundos
+        });
         const data = response.data;
         const result = data.result;
         ctx.reply(result,getMainMenu(ctx));
@@ -73,7 +75,9 @@ bot.hears('🔒 BloquearBotsTW', async (ctx) => {
 
 bot.hears('🔓 DesbloquearBotsTW', async (ctx) => {
     try {
-        const response = await axios.get(`${URL_STATUS}/api/desbloquear`);
+        const response = await axios.get(`${URL_STATUS}/api/desbloquear`,{
+            timeout: 5000 // 5 segundos
+        });
         const data = response.data;
         const result = data.result;
         ctx.reply(result,getMainMenu(ctx));
